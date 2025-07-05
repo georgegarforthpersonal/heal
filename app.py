@@ -24,6 +24,55 @@ class Sighting:
     count: int
 
 
+# Authentication credentials
+AUTH_USERNAME = "heal"
+AUTH_PASSWORD = "nightingale"
+
+
+def check_password():
+    """Returns `True` if the user had the correct password."""
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if (st.session_state["username"] == AUTH_USERNAME and
+                st.session_state["password"] == AUTH_PASSWORD):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the password
+            del st.session_state["username"]  # Don't store the username
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the password is validated
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Show input for password
+    st.markdown("### 🔐 Login Required")
+    st.markdown("Please enter your credentials to access the Bird Survey Dashboard.")
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+
+    with col2:
+        st.text_input(
+            "Username",
+            key="username",
+            placeholder="Enter username"
+        )
+        st.text_input(
+            "Password",
+            type="password",
+            key="password",
+            placeholder="Enter password"
+        )
+        st.button("Login", on_click=password_entered)
+
+    if "password_correct" in st.session_state:
+        if not st.session_state["password_correct"]:
+            st.error("❌ Invalid username or password")
+
+    return False
+
+
 # Your cleaned species list (make sure this matches what's in your Excel file)
 SPECIES_LIST: List[Species] = [
     Species("Barn Owl", "Green"),
@@ -411,11 +460,15 @@ def create_monthly_timeline(sightings: List[Sighting], selected_species: List[st
 def main():
     st.set_page_config(
         page_title="Heal Somerset Bird Survey",
-        page_icon="🦅",
+        page_icon="🦉",
         layout="wide"
     )
 
-    st.title("🦅 Heal Somerset Bird Survey Dashboard")
+    # Check if the user is authenticated
+    if not check_password():
+        st.stop()  # Stop execution if not authenticated
+
+    st.title("🦉 Heal Somerset Bird Survey Dashboard")
     st.markdown("Welcome to the bird sightings analysis dashboard for Heal Somerset.")
 
     # Load the sightings data

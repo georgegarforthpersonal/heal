@@ -1,5 +1,6 @@
 - source .venv/bin/activate
 - pip3 install -r requirements.txt
+- streamlit run app.py
 
 ### Questions
 
@@ -10,3 +11,5 @@
     - Locations are inconsistent. I have forced everything into Eastern, Northern, Southern
 - Statuses
   - I'm surprised by some of these statuses (Are Starling and Song Thrush really red?? What does this mean in real terms)
+- Incorrect sightings
+  - You mentioned nightingale being an incorrect sighting. You should be able to flag this as incorect. Then you have the sighting but it won't appear int he data
